@@ -1,0 +1,89 @@
+MODULE: 'Runner.Runner_ShapeNet'
+
+common:
+  epoch: 500
+  experiment_dir: 'Logs/'
+  log_name: 'main'
+  step_per_update: 1
+  grad_norm_clip: 10
+  val_freq: 1
+
+
+model:
+  NAME: HydraMambaSegV1
+  in_channels: 6
+  serial_mode: 'random'
+  grid_size: 0.01
+  order: [ 'hilbert_xyz', 'hilbert_xzy', 'hilbert_yxz', 'hilbert_yzx', 'hilbert_zxy', 'hilbert_zyx' ]
+  stride: [ 4, 4, 4 ]
+  group_size: 16
+  enc_depths: [ 2, 2, 6, 2 ]
+  enc_channels: [ 96, 192, 384, 768 ]
+  enc_num_head: [ 6, 12, 24, 48 ]
+  dec_depths: [ 1, 1, 1, 1 ]
+  dec_channels: [ 768, 384, 192, 96 ]
+  dec_num_head: [ 48, 24, 12, 6 ]
+  mlp_ratio: 4
+  pre_norm: True
+  d_state: 16
+  expand: 2
+  ssm_mode: 'Cascaded'
+  locality: 'DWConv'
+  kernel_size: 3
+  conv_stride: 1
+  padding: 1
+  drop_path: 0.3
+  num_points: 1024
+  num_category: 16
+  num_parts: 50
+
+
+dataloader:
+  NAME: ShapeNet
+  train:
+    dataset:
+      NAME: ShapeNet
+      data_path: Data/shapenetcore_partanno_segmentation_benchmark_v0_normal
+      use_normals: True
+      uniform_sampling: 'fps'
+      num_points: 1024
+      mode: 'train'
+      loop: 1
+      transform:
+        - { NAME: RandomScale, scale: [ 0.9, 1.1 ], anisotropic: True }
+        - { NAME: RandomShift, shift: [[ -0.05, 0.05 ], [ -0.05, 0.05 ], [ -0.05, 0.05 ]] }
+        - { NAME: ShufflePoint }
+        - { NAME: ToTensor }
+    batch_size: 24
+    num_workers: 16
+
+  test:
+    dataset:
+      NAME: ShapeNet
+      data_path: Data/shapenetcore_partanno_segmentation_benchmark_v0_normal
+      use_normals: True
+      uniform_sampling: 'fps'
+      num_points: 1024
+      mode: 'test'
+      transform:
+        - { NAME: ToTensor }
+    batch_size: 24
+    num_workers: 16
+
+optimizer:
+  NAME: AdamW
+  lr: 0.001
+  weight_decay: 0.01
+  param_dicts: ~
+
+scheduler:
+  NAME: CosineLRScheduler
+  t_initial: 400
+  lr_min: 0.000001
+  warmup_lr_init: 0.000001
+  warmup_t: 10
+
+
+criteria:
+  - { NAME: CrossEntropyLoss, loss_weight: 1.0, ignore_index: -1 }
+
