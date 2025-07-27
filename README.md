@@ -50,8 +50,8 @@ python main.py --config_path Configurations/ModelNet40.yaml --train True
 
 This project is based on Mamba ([paper](https://arxiv.org/abs/2312.00752), [code](https://github.com/state-spaces/mamba)), 
 Causal-Conv1d ([code](https://github.com/Dao-AILab/causal-conv1d)), 
-PointMamba([paper](https://arxiv.org/abs/2402.10739), [code](https://github.com/LMD0311/PointMamba)). 
-PCM([paper](https://arxiv.org/abs/2403.00762), [code](https://github.com/SkyworkAI/PointCloudMamba)).
+PointMamba([paper](https://arxiv.org/abs/2402.10739), [code](https://github.com/LMD0311/PointMamba)),
+PCM([paper](https://arxiv.org/abs/2403.00762), [code](https://github.com/SkyworkAI/PointCloudMamba)),
 Mamba3D([paper](https://arxiv.org/abs/2404.14966), [code](https://github.com/xhanxu/Mamba3D)). 
 Thanks for their wonderful works.
 
