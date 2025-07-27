@@ -43,7 +43,7 @@ $ conda activate HydraMamba
 
 Usage
 ```shell
-python main.py --config_path Configurations/ModelNet40.yaml --train True
+python main.py --config_path Configurations/ModelNet40.yaml
 ```
 
 ## Acknowledgement
